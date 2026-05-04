@@ -1,58 +1,82 @@
-# 📱 Google Play Store App Analysis
+# Google Play Store App Analysis
 
-> A data pipeline to scrape, store, and analyze **6+ million rows** of Google Play Store data across **30 countries**, **15 categories**, and **175,000+ apps**.
+Queue-based scraper for discovering Google Play app IDs across the 10 priority
+markets, then extracting full details only for apps with 100,000+ installs.
 
----
+## Goal
 
-## 🎯 Project Goals
+Build a broad dataset for app-market analysis:
 
-Analyze the Google Play Store across 5 key dimensions:
-1. 📈 **Download Trends**: How app download volumes shift over time.
-2. 🌍 **Country-wise Popularity**: Which apps dominate in each country.
-3. 🗂️ **Category Trends**: Top-performing genres and category growth.
-4. 🚀 **Top Rising Apps**: Apps climbing charts across multiple markets.
-5. 💰 **Revenue & Monetization**: Free vs paid, ad-supported, in-app purchases.
+- discover many app IDs, not only top-chart apps
+- keep a queue so scraping can stop/resume
+- fetch full app details
+- save only apps with `minInstalls >= 100000`
+- collect country stats for the 10 focus countries
 
----
+## Focus Countries
 
-## 🗄️ Tech Stack
-
-- **Scraping**: `google-play-scraper` (Python)
-- **Database**: PostgreSQL (Storage) & DuckDB (Analytics Engine)
-- **Proxies**: Webshare.io & Tor Network
-- **Concurrency**: Python `ThreadPoolExecutor`
-
----
-
-## 🚀 Setup & Usage
-
-### 1. Requirements
-- Python 3.9+
-- PostgreSQL
-- Tor Network installed
-
-### 2. Environment Variables
-Create a `.env` file in the root directory:
-```env
-DB_USER=postgres
-DB_PASS=your_password
-DB_NAME=playstore
-DB_HOST=localhost
-DB_PORT=5432
-WEBSHARE_PROXY=http://username:password@p.webshare.io:80
+```text
+us, in, br, id, mx, gb, de, jp, kr, ph
 ```
 
-### 3. Run
-```bash
+These balance large Android markets and monetization-heavy markets.
+
+## Main Tables
+
+- `app_queue`: all discovered app IDs and processing status
+- `discovery_signals`: where each app ID was discovered
+- `apps`: full details for apps with 100k+ installs
+- `app_country_stats`: country-wise stats for saved apps
+
+## Setup
+
+```powershell
 pip install -r requirements.txt
 python setup_db.py
-python phase1_charts.py
-python phase2_details.py
+python test_proxy.py
+```
+
+`.env` should contain:
+
+```env
+DB_USER=postgres
+DB_PASS=your_postgres_password
+DB_NAME=playstore
+DB_HOST=localhost
+DB_PORT=5433
+WEBSHARE_PROXIES=http://user1:pass1@p.webshare.io:80,http://user2:pass2@p.webshare.io:80,http://user3:pass3@p.webshare.io:80
+```
+
+## Run
+
+First discover app IDs:
+
+```powershell
+python discover_ids.py
+```
+
+Then extract and save 100k+ app details:
+
+```powershell
+python extract_details.py
+```
+
+Test a small extraction batch:
+
+```powershell
+python extract_details.py 20
+```
+
+Analyze current data:
+
+```powershell
 python analyze.py
 ```
 
----
+## Reset Data
 
-## ⚠️ Disclaimer
+This clears the scraped PostgreSQL dataset:
 
-This project is for **educational and research purposes only**. Always respect the Google Play Store Terms of Service and scrape responsibly with rate limiting and delays.
+```powershell
+python reset_data.py
+```
