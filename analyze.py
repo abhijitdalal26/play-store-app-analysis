@@ -27,6 +27,7 @@ def main():
             show(cur, "Table Counts", """
                 SELECT 'app_queue' AS table_name, COUNT(*) AS rows FROM app_queue
                 UNION ALL SELECT 'discovery_signals', COUNT(*) FROM discovery_signals
+                UNION ALL SELECT 'discovery_tasks', COUNT(*) FROM discovery_tasks
                 UNION ALL SELECT 'apps_100k_plus', COUNT(*) FROM apps
                 UNION ALL SELECT 'app_country_stats', COUNT(*) FROM app_country_stats;
             """)

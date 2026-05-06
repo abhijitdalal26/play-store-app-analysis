@@ -7,9 +7,9 @@ import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from google_play_scraper import app as gps_app
-from config import MARKET_COUNTRIES, THREADS, RETRY_LIMIT, MIN_INSTALLS, REQUEST_TIMEOUT
+from config import MARKET_COUNTRIES, THREADS, RETRY_LIMIT, MIN_INSTALLS, REQUEST_TIMEOUT, PROXY_MODE
 from db import DatabaseManager
-from proxies import webshare_env_proxy, random_delay
+from proxies import webshare_env_proxy, env_proxy_for_source, random_delay
 
 socket.setdefaulttimeout(REQUEST_TIMEOUT)
 
@@ -18,7 +18,9 @@ def fetch_app(app_id, country):
     waits = [5, 15, 30, 60][:RETRY_LIMIT]
     for attempt, wait in enumerate(waits, start=1):
         try:
-            with webshare_env_proxy():
+            # Use proxy mode from config (direct_only by default)
+            source = "direct" if PROXY_MODE == "direct_only" else "webshare"
+            with env_proxy_for_source(source):
                 return gps_app(app_id, lang="en", country=country)
         except Exception as exc:
             if attempt == len(waits):

@@ -48,6 +48,19 @@ class DatabaseManager:
                         discovered_at TIMESTAMPTZ DEFAULT NOW(),
                         UNIQUE (signal_key)
                     );
+
+                    CREATE TABLE IF NOT EXISTS discovery_tasks (
+                        task_key TEXT PRIMARY KEY,
+                        source TEXT NOT NULL,
+                        country CHAR(2),
+                        category TEXT,
+                        keyword TEXT,
+                        collection TEXT,
+                        status TEXT NOT NULL DEFAULT 'done',
+                        app_count INTEGER NOT NULL DEFAULT 0,
+                        last_error TEXT,
+                        completed_at TIMESTAMPTZ DEFAULT NOW()
+                    );
                 """)
                 cur.execute("""
                     CREATE TABLE IF NOT EXISTS apps (
@@ -117,6 +130,7 @@ class DatabaseManager:
                 """)
                 cur.execute("CREATE INDEX IF NOT EXISTS idx_queue_status ON app_queue(status);")
                 cur.execute("CREATE INDEX IF NOT EXISTS idx_signals_app ON discovery_signals(app_id);")
+                cur.execute("CREATE INDEX IF NOT EXISTS idx_tasks_status ON discovery_tasks(status);")
                 cur.execute("CREATE INDEX IF NOT EXISTS idx_stats_country ON app_country_stats(country);")
             conn.commit()
             print("[DB] Tables created / verified.")
@@ -129,7 +143,7 @@ class DatabaseManager:
             with conn.cursor() as cur:
                 cur.execute("DROP TABLE IF EXISTS country_charts CASCADE;")
                 cur.execute("""
-                    TRUNCATE app_country_stats, apps, discovery_signals, app_queue
+                    TRUNCATE app_country_stats, apps, discovery_signals, discovery_tasks, app_queue
                     RESTART IDENTITY CASCADE;
                 """)
             conn.commit()
@@ -274,6 +288,43 @@ class DatabaseManager:
                     cur.execute(f"SELECT COUNT(*) FROM {table};")
                     result[table] = cur.fetchone()[0]
                 return result
+        finally:
+            self._put_conn(conn)
+
+    def task_key(self, source, country=None, category=None, keyword=None, collection=None):
+        return "|".join([source, country or "", category or "", keyword or "", collection or ""])
+
+    def is_discovery_task_done(self, source, country=None, category=None, keyword=None, collection=None):
+        conn = self._get_conn()
+        try:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT 1
+                    FROM discovery_tasks
+                    WHERE task_key=%s AND status='done';
+                """, (self.task_key(source, country, category, keyword, collection),))
+                return cur.fetchone() is not None
+        finally:
+            self._put_conn(conn)
+
+    def mark_discovery_task(self, source, country=None, category=None, keyword=None, collection=None, status="done", app_count=0, error=None):
+        conn = self._get_conn()
+        try:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    INSERT INTO discovery_tasks
+                        (task_key, source, country, category, keyword, collection, status, app_count, last_error)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    ON CONFLICT (task_key) DO UPDATE SET
+                        status=EXCLUDED.status,
+                        app_count=EXCLUDED.app_count,
+                        last_error=EXCLUDED.last_error,
+                        completed_at=NOW();
+                """, (
+                    self.task_key(source, country, category, keyword, collection),
+                    source, country, category, keyword, collection, status, app_count, error,
+                ))
+            conn.commit()
         finally:
             self._put_conn(conn)
 

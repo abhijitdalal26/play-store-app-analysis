@@ -1,7 +1,17 @@
 .env
-checkpoints/
-IMPLEMENTATION_PLAN.md
 venv/
 __pycache__/
 *.pyc
 logs/
+
+# Data Files
+archive/
+google-play-dataset/
+*.csv
+*.json
+*.log
+
+# IDE and Plans
+.vscode/
+IMPLEMENTATION_PLAN.md
+checkpoints/
