@@ -1,32 +1,22 @@
-"""
-extract_details.py - Extract details for queued app IDs and save 100k+ apps.
-Usage: python extract_details.py [limit]
-"""
 import socket
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from google_play_scraper import app as gps_app
-from config import MARKET_COUNTRIES, THREADS, RETRY_LIMIT, MIN_INSTALLS, REQUEST_TIMEOUT, PROXY_MODE
-from db import DatabaseManager
-from proxies import webshare_env_proxy, env_proxy_for_source, random_delay
+from core.config import MARKET_COUNTRIES, THREADS, RETRY_LIMIT, MIN_INSTALLS, REQUEST_TIMEOUT
+from core.db import DatabaseManager
 
 socket.setdefaulttimeout(REQUEST_TIMEOUT)
-
 
 def fetch_app(app_id, country):
     waits = [5, 15, 30, 60][:RETRY_LIMIT]
     for attempt, wait in enumerate(waits, start=1):
         try:
-            # Use proxy mode from config (direct_only by default)
-            source = "direct" if PROXY_MODE == "direct_only" else "webshare"
-            with env_proxy_for_source(source):
-                return gps_app(app_id, lang="en", country=country)
+            return gps_app(app_id, lang="en", country=country)
         except Exception as exc:
             if attempt == len(waits):
                 raise exc
             time.sleep(wait)
-
 
 def process_app(app_id):
     db = DatabaseManager()
@@ -41,7 +31,7 @@ def process_app(app_id):
         stats = []
         for country in MARKET_COUNTRIES:
             try:
-                random_delay()
+                time.sleep(1)  # Minimal delay
                 country_detail = fetch_app(app_id, country)
                 stats.append({
                     "app_id": app_id,
@@ -65,7 +55,6 @@ def process_app(app_id):
     finally:
         db.close()
 
-
 def main():
     limit = int(sys.argv[1]) if len(sys.argv) > 1 else None
     db = DatabaseManager()
@@ -81,7 +70,6 @@ def main():
         futures = [executor.submit(process_app, app_id) for app_id in app_ids]
         for future in as_completed(futures):
             print(future.result())
-
 
 if __name__ == "__main__":
     main()

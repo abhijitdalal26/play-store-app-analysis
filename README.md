@@ -1,17 +1,13 @@
 # Google Play Store App Analysis
 
-Queue-based scraper for discovering Google Play app IDs across the 10 priority
-markets, then extracting full details only for apps with 100,000+ installs.
+A streamlined, direct-connection data extraction pipeline for discovering and analyzing Google Play Store apps across 10 priority markets.
 
-## Goal
+## Project Goal
 
-Build a broad dataset for app-market analysis:
-
-- discover many app IDs, not only top-chart apps
-- keep a queue so scraping can stop/resume
-- fetch full app details
-- save only apps with `minInstalls >= 100000`
-- collect country stats for the 10 focus countries
+Perform comprehensive market research to identify high-opportunity, low-competition app niches by:
+1.  Analyzing a 3.45M historical dataset (Tapivedotcom baseline).
+2.  Building a fresh 2026 dataset via local, direct-connection scraping.
+3.  Performing a "Time Machine" analysis to track survival rates and growth trends over time.
 
 ## Focus Countries
 
@@ -19,64 +15,66 @@ Build a broad dataset for app-market analysis:
 us, in, br, id, mx, gb, de, jp, kr, ph
 ```
 
-These balance large Android markets and monetization-heavy markets.
-
-## Main Tables
-
-- `app_queue`: all discovered app IDs and processing status
-- `discovery_signals`: where each app ID was discovered
-- `apps`: full details for apps with 100k+ installs
-- `app_country_stats`: country-wise stats for saved apps
-
 ## Setup
 
+1.  **Install Dependencies:**
+    ```powershell
+    pip install -r requirements.txt
+    ```
+
+2.  **Configure Environment:**
+    Create a `.env` file with your PostgreSQL credentials:
+    ```env
+    DB_USER=postgres
+    DB_PASS=your_password
+    DB_NAME=playstore
+    DB_HOST=localhost
+    DB_PORT=5433
+    THREADS=8
+    MIN_INSTALLS=0
+    ```
+
+3.  **Initialize Database:**
+    ```powershell
+    python -m extraction.setup_db
+    ```
+
+## Usage
+
+### 1. Discovery
+Build a queue of app IDs from charts, categories, and keyword searches:
 ```powershell
-pip install -r requirements.txt
-python setup_db.py
-python test_proxy.py
+python -m extraction.discover_ids
 ```
 
-`.env` should contain:
-
-```env
-DB_USER=postgres
-DB_PASS=your_postgres_password
-DB_NAME=playstore
-DB_HOST=localhost
-DB_PORT=5433
-WEBSHARE_PROXIES=http://user1:pass1@p.webshare.io:80,http://user2:pass2@p.webshare.io:80,http://user3:pass3@p.webshare.io:80
-```
-
-## Run
-
-First discover app IDs:
-
+### 2. Extraction
+Download full metadata and multi-country stats for queued apps:
 ```powershell
-python discover_ids.py
+python -m extraction.extract_details
 ```
-
-Then extract and save 100k+ app details:
-
+*To test a small batch (e.g., 5 apps):*
 ```powershell
-python extract_details.py
+python -m extraction.extract_details 5
 ```
 
-Test a small extraction batch:
-
+### 3. Monitoring
+Check the current status of the scraping queue:
 ```powershell
-python extract_details.py 20
+python -m extraction.status
 ```
 
-Analyze current data:
-
+### 4. Analysis
+Run a quick summary of the PostgreSQL database:
 ```powershell
-python analyze.py
+python -m analysis.analyze
 ```
 
-## Reset Data
+## Analysis Notebooks
+A 11-step analytical pipeline is available in `notebook_scripts/`. These scripts are designed to be run in a Jupyter environment to analyze the historical baseline and generate market insights.
 
-This clears the scraped PostgreSQL dataset:
-
-```powershell
-python reset_data.py
-```
+## Project Structure
+- `core/`: Configuration and database management.
+- `extraction/`: Discovery and detail extraction scripts.
+- `analysis/`: Analytical summary scripts.
+- `llm_notes/`: Project state and data discoveries (local only).
+- `notebook_scripts/`: Market analysis pipeline.

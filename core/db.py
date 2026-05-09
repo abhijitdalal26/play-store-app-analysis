@@ -2,7 +2,7 @@ import json
 import threading
 import psycopg2
 from psycopg2 import pool
-from config import DB_CONFIG
+from core.config import DB_CONFIG
 
 
 class DatabaseManager:

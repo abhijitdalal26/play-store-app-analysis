@@ -1,4 +1,4 @@
-from config import THREADS, MARKET_COUNTRIES, MIN_INSTALLS
+from core.config import THREADS, MARKET_COUNTRIES, MIN_INSTALLS
 
 print("=" * 70)
 print("TIME ESTIMATION & BAN RISK ANALYSIS")

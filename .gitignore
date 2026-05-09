@@ -5,13 +5,30 @@ __pycache__/
 logs/
 
 # Data Files
+data/
 archive/
 google-play-dataset/
 *.csv
 *.json
 *.log
 
+# Generated analysis exports
+analysis_outputs/
+knowledge-base/_ATTACHMENTS/
+output/
+
+# Local & Generated
+llm_notes/
+llm-notes/
+scratch/
+android-apps/
+Untitled.canvas
+**/__pycache__/
+**/.ipynb_checkpoints/
+
 # IDE and Plans
 .vscode/
+.obsidian/
+**/.obsidian/
 IMPLEMENTATION_PLAN.md
 checkpoints/

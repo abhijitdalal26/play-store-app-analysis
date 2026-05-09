@@ -3,7 +3,7 @@ status.py - Show current queue and saved-data counts.
 Usage: python status.py
 """
 import psycopg2
-from config import DB_CONFIG
+from core.config import DB_CONFIG
 
 
 def main():

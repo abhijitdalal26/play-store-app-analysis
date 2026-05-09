@@ -16,20 +16,6 @@ DB_CONFIG = {
     "password": os.getenv("DB_PASS", ""),
 }
 
-WEBSHARE_PROXY_URLS = [
-    proxy.strip()
-    for proxy in os.getenv("WEBSHARE_PROXIES", os.getenv("WEBSHARE_PROXY", "")).split(",")
-    if proxy.strip()
-]
-
-# Proxy mode: "webshare_only", "dual", or "direct_only"
-PROXY_MODE = os.getenv("PROXY_MODE", "direct_only").lower()
-
-# Request delays (seconds) to stagger requests and avoid collisions
-# Base delays between requests per IP (enforced minimum)
-WEBSHARE_DELAY = float(os.getenv("WEBSHARE_DELAY", 3))  # seconds between webshare requests
-DIRECT_IP_DELAY = float(os.getenv("DIRECT_IP_DELAY", 5))  # seconds between direct requests
-# Random delay added after each task (5-15 seconds) to avoid pattern detection
 
 # Focus countries: large Android markets plus strong monetization markets.
 MARKET_COUNTRIES = ["us", "in", "br", "id", "mx", "gb", "de", "jp", "kr", "ph"]

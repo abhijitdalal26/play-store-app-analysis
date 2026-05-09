@@ -4,8 +4,8 @@ Usage: python setup_db.py
 """
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
-from config import DB_CONFIG
-from db import DatabaseManager
+from core.config import DB_CONFIG
+from core.db import DatabaseManager
 
 
 def create_database():

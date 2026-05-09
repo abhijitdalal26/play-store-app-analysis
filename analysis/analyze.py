@@ -3,7 +3,7 @@ analyze.py - Quick PostgreSQL summary for the app dataset.
 Usage: python analyze.py
 """
 import psycopg2
-from config import DB_CONFIG
+from core.config import DB_CONFIG
 
 
 def show(cur, title, query):
