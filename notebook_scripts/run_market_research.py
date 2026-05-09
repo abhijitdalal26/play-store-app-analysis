@@ -18,8 +18,8 @@ import duckdb
 import pandas as pd
 import psycopg2
 
-from core.config import DB_CONFIG
 from market_common import ARCHETYPE_SQL, OUTPUT_DIR, csv_literal, ensure_output_dir, require_dataset
+from core.config import DB_CONFIG
 
 
 SUMMARY_PATH = OUTPUT_DIR / "market_research_summary.md"
