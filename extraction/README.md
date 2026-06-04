@@ -76,3 +76,15 @@ Run quick queries to see the most downloaded apps, active genres, and table size
 ```powershell
 python -m extraction.analyze
 ```
+
+---
+
+## Customizing Scraping Targets
+
+You can configure exactly which apps are discovered and extracted by editing configuration constants inside [extraction/config.py](file:///d:/Projects/play-store-analysis-github/extraction/config.py):
+
+*   **`MARKET_COUNTRIES`**: Change the list of country codes (e.g. `["us", "in", "br"]`) to target localized stats from specific regions.
+*   **`CATEGORIES`**: Adjust target categories (e.g. `["SOCIAL", "FINANCE", "TOOLS"]`) to limit chart scraping scopes.
+*   **`GLOBAL_SEARCH_KEYWORDS` & `COUNTRY_SEARCH_KEYWORDS`**: Customize focus keywords (e.g., adding `"workout timer"` or `"AI receipt tracker"`) to discover niche-specific apps.
+*   **`MIN_INSTALLS`**: Set a filter threshold (e.g., `100_000` or `0` for all) to automatically skip or keep low-traction apps.
+
