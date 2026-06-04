@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
@@ -14,6 +16,7 @@ NAVY      = "#3F72AF"   # Navy
 PALETTE   = [PRIMARY, CORAL, GREEN, AMBER, PURPLE, NAVY,
              "#E07BE0", "#45B7D1", "#FF6B6B", "#4ECDC4"]
 
+# Plotly layout defaults (shared by interactive charts)
 LAYOUT_DEFAULTS = dict(
     font_family="Inter, Arial, sans-serif",
     plot_bgcolor="#FAFBFC",
@@ -23,7 +26,8 @@ LAYOUT_DEFAULTS = dict(
 
 
 # ════════════════════════════════════════════════════════════════════
-# FIGURE 1 – Market Opportunity Matrix (Bubble Chart)
+# FIGURE 1 – Market Opportunity Matrix  [INTERACTIVE — Plotly]
+#   → Many overlapping bubbles; hover to identify each genre
 # ════════════════════════════════════════════════════════════════════
 def plot_market_dynamics(apps, genre_counts):
     """Interactive bubble chart: Competition Volume × Median Downloads × Monopoly Index."""
@@ -76,42 +80,42 @@ def plot_market_dynamics(apps, genre_counts):
 
 
 # ════════════════════════════════════════════════════════════════════
-# FIGURE 2 – Rating Distribution Ridges (Box + Violin)
+# FIGURE 2 – Rating Density Ridges  [STATIC — matplotlib]
+#   → Simple distribution shapes; no hover value
 # ════════════════════════════════════════════════════════════════════
 def plot_rating_density_ridges(apps, genre_counts):
-    """Interactive violin chart showing rating distributions across top 8 genres."""
+    """Static ridge-style KDE plot: rating distributions across top 8 genres."""
 
+    fig, axes = plt.subplots(8, 1, figsize=(10, 11), sharex=True)
     top_8 = genre_counts.head(8).index
-    df = apps[apps['genre'].isin(top_8)][['genre', 'score']].dropna()
-    # Order genres by volume (most apps first)
-    df['genre'] = pd.Categorical(df['genre'], categories=top_8, ordered=True)
 
-    fig = px.violin(
-        df,
-        y='genre',
-        x='score',
-        color='genre',
-        color_discrete_sequence=PALETTE,
-        orientation='h',
-        box=True,
-        points=False,
-        labels={'score': 'Rating Score (Stars)', 'genre': ''},
-    )
-    fig.update_layout(
-        title='User Sentiment: Rating Distributions across Top 8 Genres',
-        showlegend=False,
-        xaxis_range=[1, 5],
-        **LAYOUT_DEFAULTS,
-        height=500,
-    )
-    fig.show()
+    for i, genre in enumerate(top_8):
+        ax = axes[i]
+        genre_data = apps[apps['genre'] == genre]['score'].dropna()
+        sns.kdeplot(genre_data, fill=True, color=PALETTE[i % len(PALETTE)], alpha=0.6, ax=ax, lw=1.5)
+        ax.set_xlim(1.0, 5.0)
+        ax.set_ylabel("")
+        ax.text(1.1, 0.15, genre, fontweight="bold", fontsize=11, color="#2B2D42")
+        ax.patch.set_alpha(0)
+        for spine in ["top", "right", "left"]:
+            ax.spines[spine].set_visible(False)
+        ax.grid(False)
+        if i < 7:
+            ax.tick_params(axis='x', which='both', bottom=False, top=False, labelbottom=False)
+        ax.tick_params(axis='y', which='both', left=False, labelleft=False)
+
+    fig.suptitle("User Sentiment: Rating Distributions across Top 8 Genres", fontsize=15, y=0.98)
+    axes[-1].set_xlabel("App Rating Score (Stars)")
+    plt.tight_layout()
+    plt.show()
 
 
 # ════════════════════════════════════════════════════════════════════
-# FIGURE 3 – Monetization Model Split (Stacked Bar)
+# FIGURE 3 – Monetization Model Split  [STATIC — matplotlib]
+#   → Percentages annotated on the bars; static is cleaner
 # ════════════════════════════════════════════════════════════════════
 def plot_monetization_mix(apps, genre_counts):
-    """Interactive 100% stacked bar: monetization models per genre."""
+    """Static 100% stacked horizontal bar: monetization models per genre."""
 
     top_10 = genre_counts.head(10).index
     subset = apps[apps['genre'].isin(top_10)].copy()
@@ -130,42 +134,36 @@ def plot_monetization_mix(apps, genre_counts):
     subset['model'] = subset.apply(monetization_label, axis=1)
 
     ct = pd.crosstab(subset['genre'], subset['model'], normalize='index') * 100
-    order = ['Purely Free', 'Ad-Supported Only', 'IAP Only', 'Hybrid (Ads + IAP)', 'Paid Premium']
-    ct = ct.reindex(columns=order).fillna(0)
+    cols_order = ['Purely Free', 'Ad-Supported Only', 'IAP Only', 'Hybrid (Ads + IAP)', 'Paid Premium']
+    ct = ct.reindex(columns=cols_order).fillna(0)
 
-    colors = {
-        'Purely Free': PURPLE,
-        'Ad-Supported Only': AMBER,
-        'IAP Only': PRIMARY,
-        'Hybrid (Ads + IAP)': GREEN,
-        'Paid Premium': CORAL,
-    }
-
-    fig = go.Figure()
-    for col in order:
-        fig.add_trace(go.Bar(
-            y=ct.index,
-            x=ct[col],
-            name=col,
-            orientation='h',
-            marker_color=colors[col],
-            hovertemplate='%{y}<br>' + col + ': %{x:.1f}%<extra></extra>',
-        ))
-
-    fig.update_layout(
-        barmode='stack',
-        title='Revenue Architecture: Monetization Models across Top 10 Genres',
-        xaxis_title='Share of Applications (%)',
-        yaxis_title='',
-        legend_title='Monetization Strategy',
-        **LAYOUT_DEFAULTS,
-        height=480,
+    fig, ax = plt.subplots(figsize=(12, 6.5))
+    ct.plot(
+        kind='barh', stacked=True,
+        color=[PURPLE, AMBER, PRIMARY, GREEN, CORAL],
+        ax=ax, width=0.7
     )
-    fig.show()
+
+    # Annotate percentages on segments > 5%
+    for p in ax.patches:
+        width = p.get_width()
+        if width > 5:
+            x = p.get_x() + width / 2
+            y = p.get_y() + p.get_height() / 2
+            ax.annotate(f"{width:.0f}%", (x, y), ha='center', va='center',
+                        color='white', fontweight='bold', fontsize=9)
+
+    ax.set_title("Revenue Architecture: Monetization Models across Top 10 Genres", pad=15)
+    ax.set_xlabel("Share of Applications (%)")
+    ax.set_ylabel("")
+    ax.legend(title="Monetization Strategy", bbox_to_anchor=(1.02, 1), loc='upper left')
+    plt.tight_layout()
+    plt.show()
 
 
 # ════════════════════════════════════════════════════════════════════
-# FIGURE 4 – Publisher Landscape (Lorenz + Giants vs Indies scatter)
+# FIGURE 4 – Publisher Landscape  [INTERACTIVE — Plotly]
+#   → Hundreds of developer dots; hover to identify who's who
 # ════════════════════════════════════════════════════════════════════
 def plot_publisher_landscape(dev_portfolio, multi_app_indies, solo_hit_indies, gini_coeff):
     """Two-panel interactive chart: Lorenz Curve + Giants vs. Indie Powerhouses."""
@@ -266,7 +264,8 @@ def plot_publisher_landscape(dev_portfolio, multi_app_indies, solo_hit_indies, g
 
 
 # ════════════════════════════════════════════════════════════════════
-# FIGURE 5 – Regional Demand Heatmap
+# FIGURE 5 – Regional Demand Heatmap  [INTERACTIVE — Plotly]
+#   → Dense grid of cells; hover to read exact values
 # ════════════════════════════════════════════════════════════════════
 def plot_regional_heatmap(country_merged, top_15_genres):
     """Interactive heatmap: Log-scale median installs by Genre × Country."""
@@ -294,7 +293,8 @@ def plot_regional_heatmap(country_merged, top_15_genres):
 
 
 # ════════════════════════════════════════════════════════════════════
-# FIGURE 6 – Keyword Discovery Dot Plot
+# FIGURE 6 – Keyword Discovery Dot Plot  [INTERACTIVE — Plotly]
+#   → Multi-dimensional; hover reveals keyword details
 # ════════════════════════════════════════════════════════════════════
 def plot_keyword_discovery(discovery, apps):
     """Interactive dot plot: keyword installs vs. rating vs. app density."""
