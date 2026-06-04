@@ -70,9 +70,13 @@ python -m extraction.analyze
 ```
 
 ## Analysis Notebooks
-A template notebook for custom analysis is available in [notebooks/latest_extracted_data_analysis.ipynb](file:///d:/Projects/play-store-analysis-github/notebooks/latest_extracted_data_analysis.ipynb).
+The repository currently keeps two analysis workspaces:
+
+- `google_play_store_analysis_2026/`: completed analysis for the fresh 2026 scrape of 11,176 unique apps across 10 markets.
+- `google_play_store_analysis_tapivedotcom/`: separate workspace for the larger Tapive dataset analysis.
 
 ## Project Structure
 - `extraction/`: Contains all scraper, discovery, database, and configuration code.
-- `notebooks/`: Directory containing Jupyter notebooks for data analysis.
+- `google_play_store_analysis_2026/`: Finished 2026 scraped-data notebook, reusable visualization code, and exported figures.
+- `google_play_store_analysis_tapivedotcom/`: Larger historical Tapive dataset notebook and plotting helpers.
 - `data/`: Local storage for the raw datasets (CSV) - git-ignored.

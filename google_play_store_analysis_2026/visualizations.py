@@ -241,7 +241,7 @@ def plot_publisher_landscape(dev_portfolio, multi_app_indies, solo_hit_indies, g
     # Annotate top indie powerhouses
     for _, row in multi_app_indies.head(3).iterrows():
         fig.add_annotation(
-            x=np.log10(row['app_count']),
+            x=row['app_count'],
             y=row['avg_score'],
             text=row['developer'],
             showarrow=True, arrowhead=2,
