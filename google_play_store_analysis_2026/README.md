@@ -47,11 +47,12 @@ Install coverage in this snapshot:
 4. Developer concentration and indie opportunities
 5. Country and regional demand
 6. Discovery and keyword intelligence
-7. Strategic conclusions
+7. Follow-up opportunity analysis
+8. Strategic conclusions
 
-## Additional Questions This Dataset Can Answer
+## Additional Questions Answered
 
-The current notebook covers the main 2026 EDA, but the same data can also support a few useful follow-up analyses:
+Chapter 10 of the notebook now answers these follow-up analyses:
 
 | Question | Why it matters |
 |----------|----------------|
