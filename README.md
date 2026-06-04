@@ -1,13 +1,15 @@
 # Google Play Store App Analysis
 
+![Google Play Store analysis banner](images/logo.png)
+
 A streamlined, direct-connection data extraction pipeline for discovering and analyzing Google Play Store apps across 10 priority markets.
 
 ## Project Goal
 
 Perform comprehensive market research to identify high-opportunity, low-competition app niches by:
-1.  Analyzing a 3.45M historical dataset (Tapivedotcom baseline).
+1.  Analyzing a 3.46M historical dataset (Tapivedotcom baseline).
 2.  Building a fresh 2026 dataset via local, direct-connection scraping.
-3.  Performing a "Time Machine" analysis to track survival rates and growth trends over time.
+3.  Comparing the historical baseline with a fresh 2026 sample to understand current market structure, monetization, regional demand, and opportunity signals.
 
 ## Focus Countries
 
@@ -74,6 +76,15 @@ The repository currently keeps two analysis workspaces:
 
 - `google_play_store_analysis_2026/`: completed analysis for the fresh 2026 scrape of 11,176 unique apps across 10 markets.
 - `google_play_store_analysis_tapivedotcom/`: separate workspace for the larger Tapive dataset analysis.
+
+## Datasets
+
+The raw CSV datasets are not committed to this repository because of their size. Download them from Kaggle if you want to reproduce the notebooks locally:
+
+- **2026 scraped dataset (11,176 apps):** [Google Play Store App Dataset 2026](https://www.kaggle.com/datasets/abhijitdalal26/google-play-store-app-dataset-2026)
+- **Tapive historical dataset (~3.46M app records):** [Google Play Apps and Games](https://www.kaggle.com/datasets/tapive/google-play-apps-and-games)
+
+Place downloaded files under `data/` using the paths expected by the notebooks.
 
 ## Project Structure
 - `extraction/`: Contains all scraper, discovery, database, and configuration code.
