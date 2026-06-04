@@ -47,6 +47,8 @@ The extraction pipeline supports a configurable install threshold through `MIN_I
 
 **File:** `images/figure1_market_volume.png`
 
+![Market Opportunity Matrix](images/figure1_market_volume.png)
+
 Compares each top genre by app count, median installs, and concentration ratio. This is used to separate saturated categories from categories with better demand-to-competition balance.
 
 **Main takeaway:** Finance, Education, Productivity, and Tools are highly crowded, while some smaller genres can still show stronger install potential.
@@ -54,6 +56,8 @@ Compares each top genre by app count, median installs, and concentration ratio. 
 ### Figure 2: Rating Density Ridges
 
 **File:** `images/figure2_ratings_quality.png`
+
+![Rating Density Ridges](images/figure2_ratings_quality.png)
 
 Shows score distributions for the top genres, making it easier to see which categories have consistently high user sentiment and which are more polarized.
 
@@ -63,6 +67,8 @@ Shows score distributions for the top genres, making it easier to see which cate
 
 **File:** `images/figure3_monetization.png`
 
+![Monetization Mix](images/figure3_monetization.png)
+
 Breaks top genres into monetization models: purely free, ad-supported, IAP-only, hybrid ads plus IAP, and paid premium.
 
 **Main takeaway:** Free apps dominate the sample at about 97.7%, so the practical monetization question is usually which free-app model fits the category, not whether to launch paid-only.
@@ -70,6 +76,8 @@ Breaks top genres into monetization models: purely free, ad-supported, IAP-only,
 ### Figure 4: Publisher Landscape
 
 **File:** `images/figure4_developer_lorenz.png`
+
+![Publisher Landscape](images/figure4_developer_lorenz.png)
 
 Combines a Lorenz curve for install concentration with a developer scatter plot that separates large publishers from indie and mid-sized powerhouses.
 
@@ -79,6 +87,8 @@ Combines a Lorenz curve for install concentration with a developer scatter plot 
 
 **File:** `images/figure5_regional_comparison.png`
 
+![Regional Demand Matrix](images/figure5_regional_comparison.png)
+
 Maps median installs by genre and country, using the 10 scraped markets.
 
 **Main takeaway:** Regional demand varies by category, so localization and country prioritization should be part of the opportunity strategy.
@@ -86,6 +96,8 @@ Maps median installs by genre and country, using the 10 scraped markets.
 ### Figure 6: Keyword Discovery Landscape
 
 **File:** `images/figure6_discovery_signals.png`
+
+![Keyword Discovery Landscape](images/figure6_discovery_signals.png)
 
 Connects keyword discovery with median installs, average score, and app density.
 
