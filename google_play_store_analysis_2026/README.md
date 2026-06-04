@@ -29,6 +29,8 @@ The notebook reads local CSV files from `../data/scraped_2026/`:
 
 About 2,245 apps have missing ratings, which is expected for unrated or low-activity listings. The analysis keeps those apps for market-volume and install analysis, while rating-specific sections automatically use rated apps only.
 
+The extraction pipeline supports a configurable install threshold through `MIN_INSTALLS`, but this saved 2026 dataset was exported with lower-install apps included. In this snapshot, 7,223 apps have at least 100,000 installs, 3,922 apps are below 100,000 installs, and 31 apps have missing install values. Conclusions should therefore be read as analysis of the discovered 2026 sample rather than analysis of only 100,000+ install apps or the entire Play Store.
+
 ## Analysis Structure
 
 1. Market structure and genre competition
