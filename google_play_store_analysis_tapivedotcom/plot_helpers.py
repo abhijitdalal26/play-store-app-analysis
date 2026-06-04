@@ -640,7 +640,7 @@ def plot_paid_price_sweet_spot(paid_data, bin_agg):
 
     fig.add_trace(go.Scattergl(
         x=paid_data["price"],
-        y=_np.log10(paid_data["minInstalls"] + 1),
+        y=np.log10(paid_data["minInstalls"] + 1),
         mode="markers",
         marker=dict(size=4, color=paid_data["score"], colorscale="RdYlGn",
                     showscale=True, colorbar=dict(title="Score", x=0.44), opacity=0.5),
