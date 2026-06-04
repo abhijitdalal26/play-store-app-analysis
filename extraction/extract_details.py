@@ -1,10 +1,14 @@
+"""
+extract_details.py - App details scraper. Fetches full application metadata (US baseline) and country-specific stats (installs, ratings, prices) for queued app IDs, saving them to the database.
+Usage: python -m extraction.extract_details [batch_limit]
+"""
 import socket
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from google_play_scraper import app as gps_app
-from core.config import MARKET_COUNTRIES, THREADS, RETRY_LIMIT, MIN_INSTALLS, REQUEST_TIMEOUT
-from core.db import DatabaseManager
+from extraction.config import MARKET_COUNTRIES, THREADS, RETRY_LIMIT, MIN_INSTALLS, REQUEST_TIMEOUT
+from extraction.db import DatabaseManager
 
 socket.setdefaulttimeout(REQUEST_TIMEOUT)
 

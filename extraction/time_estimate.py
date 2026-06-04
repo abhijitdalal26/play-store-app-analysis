@@ -1,4 +1,8 @@
-from core.config import THREADS, MARKET_COUNTRIES, MIN_INSTALLS
+"""
+time_estimate.py - Time estimation & rate limit assessment script. Analyzes time requirements and ban risk parameters based on active configuration settings.
+Usage: python -m extraction.time_estimate
+"""
+from extraction.config import THREADS, MARKET_COUNTRIES, MIN_INSTALLS
 
 print("=" * 70)
 print("TIME ESTIMATION & BAN RISK ANALYSIS")

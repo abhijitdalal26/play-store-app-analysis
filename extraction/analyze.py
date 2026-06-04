@@ -1,9 +1,9 @@
 """
-analyze.py - Quick PostgreSQL summary for the app dataset.
-Usage: python analyze.py
+analyze.py - Database statistics summary script. Connects to PostgreSQL to run quick descriptive analytics on genres, counts, and top apps in the database.
+Usage: python -m extraction.analyze
 """
 import psycopg2
-from core.config import DB_CONFIG
+from extraction.config import DB_CONFIG
 
 
 def show(cur, title, query):

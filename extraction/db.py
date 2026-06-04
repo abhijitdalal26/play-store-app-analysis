@@ -1,8 +1,11 @@
+"""
+db.py - PostgreSQL Database Manager. Manages connection pooling, table schemas, scraping queue tracking, and inserts detailed app metadata & multi-country statistics.
+"""
 import json
 import threading
 import psycopg2
 from psycopg2 import pool
-from core.config import DB_CONFIG
+from extraction.config import DB_CONFIG
 
 
 class DatabaseManager:

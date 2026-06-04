@@ -1,11 +1,11 @@
 """
 setup_db.py - Create the PostgreSQL database and project tables.
-Usage: python setup_db.py
+Usage: python -m extraction.setup_db
 """
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
-from core.config import DB_CONFIG
-from core.db import DatabaseManager
+from extraction.config import DB_CONFIG
+from extraction.db import DatabaseManager
 
 
 def create_database():

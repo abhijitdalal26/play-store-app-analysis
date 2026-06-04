@@ -1,3 +1,6 @@
+"""
+config.py - Scraper and database configurations, target market settings, target genres, search filters, and pipeline settings.
+"""
 import os
 from pathlib import Path
 from dotenv import load_dotenv

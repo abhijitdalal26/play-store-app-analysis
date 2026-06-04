@@ -66,15 +66,13 @@ python -m extraction.status
 ### 4. Analysis
 Run a quick summary of the PostgreSQL database:
 ```powershell
-python -m analysis.analyze
+python -m extraction.analyze
 ```
 
 ## Analysis Notebooks
-A 11-step analytical pipeline is available in `notebook_scripts/`. These scripts are designed to be run in a Jupyter environment to analyze the historical baseline and generate market insights.
+A template notebook for custom analysis is available in [notebooks/latest_extracted_data_analysis.ipynb](file:///d:/Projects/play-store-analysis-github/notebooks/latest_extracted_data_analysis.ipynb).
 
 ## Project Structure
-- `core/`: Configuration and database management.
-- `extraction/`: Discovery and detail extraction scripts.
-- `analysis/`: Analytical summary scripts.
-- `llm_notes/`: Project state and data discoveries (local only).
-- `notebook_scripts/`: Market analysis pipeline.
+- `extraction/`: Contains all scraper, discovery, database, and configuration code.
+- `notebooks/`: Directory containing Jupyter notebooks for data analysis.
+- `data/`: Local storage for the raw datasets (CSV) - git-ignored.

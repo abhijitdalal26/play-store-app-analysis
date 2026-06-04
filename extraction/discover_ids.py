@@ -1,3 +1,7 @@
+"""
+discover_ids.py - App ID discovery script. Discovers and queues Google Play Store App IDs from charts, category lists, and keyword searches across target markets.
+Usage: python -m extraction.discover_ids
+"""
 import re
 import time
 import requests
@@ -5,11 +9,11 @@ import queue
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from google_play_scraper import search
 from fake_useragent import UserAgent
-from core.config import (
+from extraction.config import (
     MARKET_COUNTRIES, CATEGORIES, CHART_COLLECTIONS, CHART_COUNT,
     build_search_keywords, SEARCH_HITS, THREADS
 )
-from core.db import DatabaseManager
+from extraction.db import DatabaseManager
 
 ua = UserAgent()
 

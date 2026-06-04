@@ -1,9 +1,9 @@
 """
 status.py - Show current queue and saved-data counts.
-Usage: python status.py
+Usage: python -m extraction.status
 """
 import psycopg2
-from core.config import DB_CONFIG
+from extraction.config import DB_CONFIG
 
 
 def main():
