@@ -50,16 +50,14 @@ Install coverage in this snapshot:
 7. Follow-up opportunity analysis
 8. Strategic conclusions
 
-## Additional Questions Answered
+## Key Findings
 
-Chapter 10 of the notebook now answers these follow-up analyses:
+The follow-up analysis in Chapter 10 surfaces a few practical opportunity signals:
 
-| Question | Why it matters |
-|----------|----------------|
-| Which low-install apps look promising? | Apps below 100,000 installs but with high ratings, strong keywords, or useful niches could reveal early opportunity areas. |
-| Which genres have high demand but less competition? | Median installs, app count, and publisher concentration can highlight categories where demand is meaningful but competition is not overwhelming. |
-| Which countries show unusual demand by genre? | Country-level stats can show where categories such as Finance, Education, Shopping, Health, or Productivity overperform. |
-| Which keywords surface high-quality apps instead of only crowded apps? | This can become an ASO opportunity map by connecting keyword discovery with rating quality, installs, and app density. |
+- The low-install opportunity pool contains 700 apps under 100,000 installs with strong rating signals. Examples surfaced by the ranking include `MyMoney Pro - Expense & Budget`, `Background Eraser: Remove BG`, and `AI Resume Builder & CV Maker`.
+- Genres with the strongest demand-adjusted opportunity scores include `Word`, `Racing`, `Arcade`, `Action`, and `Card`, based on median installs, app count, publisher concentration, and rating quality.
+- Country discovery signals over-index for `Maps & Navigation` in markets such as `ph`, `jp`, `kr`, and `de`; `Communication` and `Music & Audio` also show strong country-specific discovery lift in selected markets.
+- High-quality keyword surfaces include `phonepe`, `whatsapp`, `gpay`, `meesho`, and `photo editor espanol`, though these should be reviewed carefully because some are competitor or brand-adjacent keywords.
 
 ## Figure Guide
 
