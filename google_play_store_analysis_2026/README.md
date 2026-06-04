@@ -31,6 +31,14 @@ About 2,245 apps have missing ratings, which is expected for unrated or low-acti
 
 The extraction pipeline supports a configurable install threshold through `MIN_INSTALLS`, but this saved 2026 dataset was exported with lower-install apps included. In this snapshot, 7,223 apps have at least 100,000 installs, 3,922 apps are below 100,000 installs, and 31 apps have missing install values. Conclusions should therefore be read as analysis of the discovered 2026 sample rather than analysis of only 100,000+ install apps or the entire Play Store.
 
+Install coverage in this snapshot:
+
+| Install group | App count |
+|---------------|-----------|
+| 100,000+ installs | 7,223 |
+| Below 100,000 installs | 3,922 |
+| Missing install values | 31 |
+
 ## Analysis Structure
 
 1. Market structure and genre competition
@@ -40,6 +48,17 @@ The extraction pipeline supports a configurable install threshold through `MIN_I
 5. Country and regional demand
 6. Discovery and keyword intelligence
 7. Strategic conclusions
+
+## Additional Questions This Dataset Can Answer
+
+The current notebook covers the main 2026 EDA, but the same data can also support a few useful follow-up analyses:
+
+| Question | Why it matters |
+|----------|----------------|
+| Which low-install apps look promising? | Apps below 100,000 installs but with high ratings, strong keywords, or useful niches could reveal early opportunity areas. |
+| Which genres have high demand but less competition? | Median installs, app count, and publisher concentration can highlight categories where demand is meaningful but competition is not overwhelming. |
+| Which countries show unusual demand by genre? | Country-level stats can show where categories such as Finance, Education, Shopping, Health, or Productivity overperform. |
+| Which keywords surface high-quality apps instead of only crowded apps? | This can become an ASO opportunity map by connecting keyword discovery with rating quality, installs, and app density. |
 
 ## Figure Guide
 
