@@ -33,6 +33,7 @@ The Tapive dataset acts as the large historical baseline for the project. It is 
 
 1. Data quality, schema, missing values, and duplicate checks
 2. Rating, install, review, category, release-year, and IAP-price distributions
+   - **2.7b** Year-over-year trends (2012–2023): new apps per year, avg score, avg installs, and monetization mix shift
 3. Free vs paid performance and monetization model comparisons
 4. Correlations between installs, reviews, ratings, app age, screenshots, and price
 5. Outlier detection for suspicious ratings, weak viral apps, and poor pricing choices
@@ -57,6 +58,7 @@ This keeps the notebook readable even though the dataset is large.
 
 ## Key Findings
 
+- The dataset contains **3.46M app records**, but roughly two-thirds have never received a rating (`score = 0`). The corrected average rating for apps that have been rated is approximately **4.1 stars**, not the raw 0.517 figure that appears if unrated apps are included in the average.
 - Ratings cluster strongly between **4.0 and 4.8 stars**, so category-specific benchmarks are more useful than one global rating average.
 - Apps with a perfect **5.0 score but very few ratings** should be treated carefully because they may reflect inflated or immature rating signals.
 - Installs follow a strong **power-law distribution**: a small group of apps captures most downloads, while the long tail sits mostly around the 1K-50K install range.
@@ -66,6 +68,7 @@ This keeps the notebook readable even though the dataset is large.
 - Reviews and ratings are the strongest install correlates in the notebook's log-scale analysis.
 - Most developers publish only one or two apps. Very high-volume "factory" developers exist, but many show weaker average quality.
 - The typical successful 10M+ install app profile is free or freemium, rated at least about 4.2 stars, has many reviews, is several years old, and usually includes 5-8 screenshots.
+- **Year-over-year trends (2012–2023)** show that new app releases peaked around 2019–2020 and have declined since; IAP and ad-supported adoption has grown steadily over the same period while paid-app share has continued to shrink.
 
 ## Figure Guide
 
@@ -90,6 +93,7 @@ This keeps the notebook readable even though the dataset is large.
 | 17 | `images/17_top_developers.png` | Which developers dominate install volume? |
 | 18 | `images/18_developer_type_comparison.png` | How do single-app and multi-app developers compare? |
 | 19 | `images/19_monetization_tiers.png` | Which monetization models appear across install tiers? |
+| 20 | `images/yoy_trends.png` | How have release volume, rating quality, avg installs, and monetization mix shifted year over year? |
 
 ## How to Run
 

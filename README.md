@@ -91,3 +91,5 @@ Place downloaded files under `data/` using the paths expected by the notebooks.
 - `google_play_store_analysis_2026/`: Finished 2026 scraped-data notebook, reusable visualization code, and exported figures.
 - `google_play_store_analysis_tapivedotcom/`: Larger historical Tapive dataset notebook and plotting helpers.
 - `data/`: Local storage for the raw datasets (CSV) - git-ignored.
+- `data_my_copy/scraped_2026/`: Enhanced Excel versions of the three 2026 data files (`apps.xlsx`, `app_country_stats.xlsx`, `discovery_signals.xlsx`). Each file includes a Dashboard sheet with summary stats and charts, auto-filters, frozen headers, and conditional formatting.
+- `enhance_excel.py`: Script that (re-)generates the enhanced Excel files from the CSVs. Run `python enhance_excel.py` from the project root.

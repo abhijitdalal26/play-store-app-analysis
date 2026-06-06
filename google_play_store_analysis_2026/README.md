@@ -43,21 +43,27 @@ Install coverage in this snapshot:
 
 1. Market structure and genre competition
 2. Ratings and quality patterns
+2.5. Content rating and audience segmentation
 3. Monetization strategy
 4. Developer concentration and indie opportunities
 5. Country and regional demand
 6. Discovery and keyword intelligence
-7. Follow-up opportunity analysis
-8. Strategic conclusions
+7. App freshness and update recency
+8. Follow-up opportunity analysis (Chapters 10.1–10.4)
+9. Combined master opportunity dashboard (Chapter 11)
+10. Strategic conclusions
 
 ## Key Findings
 
-The follow-up analysis in Chapter 10 surfaces a few practical opportunity signals:
+The follow-up analysis in Chapters 10–11 surfaces several practical opportunity signals:
 
 - The low-install opportunity pool contains 700 apps under 100,000 installs with strong rating signals. Examples surfaced by the ranking include `MyMoney Pro - Expense & Budget`, `Background Eraser: Remove BG`, and `AI Resume Builder & CV Maker`.
 - Genres with the strongest demand-adjusted opportunity scores include `Word`, `Racing`, `Arcade`, `Action`, and `Card`, based on median installs, app count, publisher concentration, and rating quality.
 - Country discovery signals over-index for `Maps & Navigation` in markets such as `ph`, `jp`, `kr`, and `de`; `Communication` and `Music & Audio` also show strong country-specific discovery lift in selected markets.
 - High-quality keyword surfaces include `phonepe`, `whatsapp`, `gpay`, `meesho`, and `photo editor espanol`, though these should be reviewed carefully because some are competitor or brand-adjacent keywords.
+- Content rating segmentation shows that `Everyone` apps dominate in count but `Teen` and `Mature 17+` titles show higher install efficiency in several genres — useful for targeting decisions.
+- App freshness analysis (Chapter 7) buckets apps by days since last update. Recently updated apps (under 90 days) tend to have higher scores and stronger discovery presence, confirming that active maintenance is correlated with quality signals.
+- The combined master opportunity dashboard (Chapter 11) ranks apps by a composite score that weights promise, genre opportunity, keyword reach, and country breadth — surfacing the most actionable targets across all signals.
 
 ## Figure Guide
 
@@ -121,8 +127,26 @@ Connects keyword discovery with median installs, average score, and app density.
 
 **Main takeaway:** Keywords that surface many apps are not automatically the best opportunities; stronger targets combine meaningful demand, quality signals, and manageable competition.
 
+## Figure Guide (new chapters)
+
+### Content Rating Analysis
+**File:** `images/content_rating_analysis.png`
+
+Breaks app count, score, and install efficiency by content rating (Everyone, Teen, Mature 17+, Everyone 10+) and shows how genre mix differs across audience segments.
+
+### App Freshness Analysis
+**File:** `images/app_freshness_analysis.png`
+
+Buckets apps by days since last update (`<90 days`, `90–180`, `180–365`, `1–2 years`, `2+ years`) and compares score, ratings, and install distributions across freshness tiers.
+
+### Master Opportunity Dashboard
+**File:** `images/master_opportunity_dashboard.png`
+
+Scatter plot of every low-install promising app on two axes — genre opportunity score vs individual app promise score — coloured by keyword count. The top-right quadrant highlights apps that combine strong individual signals with a high-opportunity genre context.
+
 ## Notes
 
 - Data files are intentionally stored under `data/` and ignored by Git.
 - The notebook uses relative paths, so run it from inside this directory.
 - The Tapive dataset analysis is separate and lives in `../google_play_store_analysis_tapivedotcom/`.
+- Enhanced Excel versions of the three data files (with auto-filters, charts, and dashboards) are available in `../data_my_copy/scraped_2026/` and can be regenerated via `python enhance_excel.py` from the project root.
