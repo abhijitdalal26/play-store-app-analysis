@@ -14,6 +14,7 @@ google-play-dataset/
 
 # Generated analysis exports
 analysis_outputs/
+analysis/cache/
 knowledge-base/_ATTACHMENTS/
 output/
 

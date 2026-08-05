@@ -72,8 +72,26 @@ Run a quick summary of the PostgreSQL database:
 python -m extraction.analyze
 ```
 
+## Analysis Report (`analysis/`)
+
+A script-based (not notebook-based) analysis pipeline that produces a single
+portfolio-quality HTML report, `report/index.html`, combining both datasets
+into one narrative: market landscape, 2022→2026 evolution, ratings/quality,
+monetization, developer concentration, freshness, geography &
+discoverability, and an opportunity synthesis. Static charts (matplotlib) and
+interactive charts (Plotly) are both used, picked per-chart based on whether
+hovering for exact values adds anything.
+
+Run it:
+```powershell
+python -m analysis.run_all
+python -m http.server 8000   # then open http://localhost:8000/report/index.html
+```
+
+See `analysis/README.md` for the module layout and how to add a new section.
+
 ## Analysis Notebooks
-The repository keeps three analysis workspaces:
+The repository also keeps three earlier, notebook-based analysis workspaces:
 
 ### Exploratory analysis
 - `google_play_store_analysis_2026/`: completed analysis for the fresh 2026 scrape of 11,176 unique apps across 10 markets.
@@ -105,6 +123,7 @@ The raw CSV datasets are not committed to this repository because of their size.
 Place downloaded files under `data/` using the paths expected by the notebooks.
 
 ## Project Structure
+- `analysis/`: Script-based analysis pipeline (DuckDB-backed data prep, matplotlib/Plotly charts, HTML report generator). Outputs `report/index.html`.
 - `extraction/`: Contains all scraper, discovery, database, and configuration code.
 - `google_play_store_analysis_2026/`: Finished 2026 scraped-data notebook, reusable visualization code, and exported figures.
 - `google_play_store_analysis_tapivedotcom/`: Larger historical Tapive dataset notebook and plotting helpers.

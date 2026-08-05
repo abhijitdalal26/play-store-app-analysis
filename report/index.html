@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Google Play Store, Decoded — A Data Story</title>
+<style>
+  :root {
+    --ink: #1B1F3B;
+    --paper: #FBFAF7;
+    --paper-alt: #F3F0E7;
+    --primary: #2F6F4F;
+    --old: #B5772F;
+    --line: #E4DFD1;
+    --muted: #6B6858;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: "Georgia", "Iowan Old Style", serif;
+    line-height: 1.65;
+  }
+  h1, h2, h3, .kicker, .stat-label, .toc a, nav, .interactive-tag {
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  }
+  a { color: var(--primary); }
+
+  /* ── Hero ───────────────────────────────────────────── */
+  .hero {
+    min-height: 92vh; display: flex; flex-direction: column; justify-content: center;
+    padding: 6vh 8vw; background:
+      radial-gradient(circle at 15% 20%, rgba(47,111,79,0.10), transparent 45%),
+      radial-gradient(circle at 85% 75%, rgba(181,119,47,0.10), transparent 45%),
+      var(--paper);
+    border-bottom: 1px solid var(--line);
+  }
+  .eyebrow {
+    font-family: "Segoe UI", Arial, sans-serif; letter-spacing: 0.18em; text-transform: uppercase;
+    font-size: 0.78rem; color: var(--old); font-weight: 600; margin-bottom: 1.2rem;
+  }
+  .hero h1 {
+    font-size: clamp(2.4rem, 5.5vw, 4.4rem); margin: 0 0 1.2rem; line-height: 1.08; max-width: 18ch;
+  }
+  .hero .lede { font-size: 1.25rem; max-width: 62ch; color: #3A3830; margin-bottom: 2.6rem; }
+  .stat-row { display: flex; flex-wrap: wrap; gap: 2.6rem; }
+  .stat-value {
+    font-family: "Segoe UI", Arial, sans-serif; font-size: 2.1rem; font-weight: 700; color: var(--primary);
+  }
+  .stat-label { font-size: 0.85rem; color: var(--muted); max-width: 16ch; }
+
+  /* ── Table of contents ──────────────────────────────── */
+  .toc { padding: 5vh 8vw; border-bottom: 1px solid var(--line); background: var(--paper-alt); }
+  .toc h3 { text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.85rem; color: var(--muted); margin-bottom: 1.4rem; }
+  .toc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.6rem 2rem; }
+  .toc a {
+    display: flex; gap: 0.8rem; align-items: baseline; text-decoration: none; color: var(--ink);
+    font-size: 0.98rem; padding: 0.35rem 0; border-bottom: 1px dotted transparent;
+  }
+  .toc a:hover { border-bottom-color: var(--primary); color: var(--primary); }
+  .toc-num { font-weight: 700; color: var(--old); font-size: 0.85rem; }
+
+  /* ── Sections ───────────────────────────────────────── */
+  .story-section {
+    display: grid; grid-template-columns: 90px 1fr; gap: 1.5rem;
+    padding: 7vh 8vw; max-width: 1180px; margin: 0 auto; border-bottom: 1px solid var(--line);
+  }
+  .section-index {
+    font-family: "Segoe UI", Arial, sans-serif; font-size: 3.2rem; font-weight: 800;
+    color: var(--line); line-height: 1;
+  }
+  .kicker {
+    text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.78rem; font-weight: 700;
+    color: var(--old); margin-bottom: 0.6rem;
+  }
+  .story-section h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); margin: 0 0 1.3rem; max-width: 26ch; line-height: 1.25; }
+  .narrative p { font-size: 1.08rem; color: #2A2820; max-width: 72ch; margin: 0 0 1.1rem; }
+  .narrative strong { color: var(--primary); }
+
+  .figure-stack { display: flex; flex-direction: column; gap: 2.4rem; margin-top: 2.2rem; }
+  figure.chart { margin: 0; }
+  figure.chart img { width: 100%; border-radius: 6px; border: 1px solid var(--line); background: white; }
+  figure.chart iframe {
+    width: 100%; height: 560px; border: 1px solid var(--line); border-radius: 6px; background: white;
+  }
+  figcaption {
+    font-family: "Segoe UI", Arial, sans-serif; font-size: 0.85rem; color: var(--muted);
+    margin-top: 0.6rem; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+  }
+  .interactive-tag {
+    color: var(--primary); font-weight: 600; white-space: nowrap;
+  }
+
+  /* ── Opportunity table ─────────────────────────────── */
+  .table-wrap { overflow-x: auto; margin: 1.6rem 0; }
+  table.opp-table {
+    border-collapse: collapse; width: 100%; font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 0.92rem; min-width: 640px;
+  }
+  table.opp-table th {
+    text-align: left; padding: 0.7rem 0.9rem; background: var(--ink); color: var(--paper);
+    font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  table.opp-table td { padding: 0.65rem 0.9rem; border-bottom: 1px solid var(--line); }
+  table.opp-table tr:nth-child(even) { background: var(--paper-alt); }
+  td.cat-name { font-weight: 600; }
+  .score-pill {
+    display: inline-block; background: var(--primary); color: white; border-radius: 20px;
+    padding: 0.15rem 0.7rem; font-weight: 700;
+  }
+
+  /* ── Footer ─────────────────────────────────────────── */
+  footer {
+    padding: 6vh 8vw; text-align: center; color: var(--muted);
+    font-family: "Segoe UI", Arial, sans-serif; font-size: 0.85rem;
+  }
+
+  @media (max-width: 720px) {
+    .story-section { grid-template-columns: 1fr; }
+    .section-index { font-size: 1.6rem; }
+    figure.chart iframe { height: 420px; }
+  }
+</style>
+</head>
+<body>
+
+  <header class="hero">
+    <p class="eyebrow">A Data Story · Google Play Store 2022 → 2026</p>
+    <h1>3.4 million apps chased the same download button. Almost all of them lost.</h1>
+    <p class="lede">
+      This report merges a 3.45-million-app archive of the Play Store from 2022 with a fresh,
+      country-by-country scrape of 11,000+ live apps in 2026 to answer a practical question:
+      structurally, where does opportunity actually sit on the store today — and where is it an
+      illusion of size?
+    </p>
+    <div class="stat-row"><div class="stat"><div class="stat-value">3,451,063</div><div class="stat-label">apps in the 2022 archive</div></div><div class="stat"><div class="stat-value">11,176</div><div class="stat-label">apps in the live 2026 scrape</div></div><div class="stat"><div class="stat-value">1,136,108</div><div class="stat-label">distinct developers, 2022</div></div><div class="stat"><div class="stat-value">97%</div><div class="stat-label">of the 2022 catalogue is free</div></div></div>
+  </header>
+
+  <nav class="toc">
+    <h3>In this report</h3>
+    <div class="toc-grid"><a href="#market-landscape"><span class="toc-num">01</span>A store of 3.45 million apps, and a handful of categories that run it</a><a href="#category-shift"><span class="toc-num">02</span>Four years on: Finance is eating share, Music & Audio is shrinking</a><a href="#evolution"><span class="toc-num">03</span>The store didn't just grow — the business model changed underneath it</a><a href="#app-explorer"><span class="toc-num">04</span>11,176 real apps, not a category average</a><a href="#ratings-quality"><span class="toc-num">05</span>Reach and quality are two different games</a><a href="#monetization"><span class="toc-num">06</span>Paid apps are a rounding error; hybrid ads-plus-IAP is the default</a><a href="#developers"><span class="toc-num">07</span>Big tech holds 64% of 2026 installs — and even without them, it's still winner-take-most</a><a href="#freshness"><span class="toc-num">08</span>Publishing peaked years ago — but the survivors are actively maintained</a><a href="#geo-discovery"><span class="toc-num">09</span>United States rates apps kindest, Japan rates them harshest — and the charts have favorites</a><a href="#opportunity"><span class="toc-num">10</span>Where the numbers point, if you were shipping a new app this quarter</a></div>
+  </nav>
+
+  <main>
+    
+    <section class="story-section" id="market-landscape">
+      <div class="section-index">01</div>
+      <div class="section-body">
+        <p class="kicker">Part 1 · Market Landscape</p>
+        <h2>A store of 3.45 million apps, and a handful of categories that run it</h2>
+        <div class="narrative"><p>The 2022 catalogue counts <strong>3,451,063 apps</strong> spread across <strong>48 categories</strong> — but the distribution is nowhere close to even. <strong>Education</strong> alone carries 386,518 apps, and the top handful of categories (Education, Entertainment, Music & Audio, Business, Tools) absorb a disproportionate share of everything ever published.</p><p>Raw app counts include everyone, including publishers that were never real competition to begin with. In <strong>Travel & Local</strong>, big tech and pre-installed publishers alone account for 79% of all installs — one or two players with an unfair structural head start, not a crowded market.</p><p>The chart below shows the full, unfiltered store by default — every publisher, nothing held back — plotted on three axes at once: how many apps are fighting for attention (x-axis), how much demand exists per app (y-axis, log scale), and how concentrated that demand is in the hands of the top 3 apps (bubble size). Click <strong>"Indie developers only"</strong> in the legend to swap in the big-tech-excluded view — the same chart, the same axes, filtered to the competition an independent developer can actually contest. Every chart later in this report that talks about 'competition' or 'opportunity' offers the same toggle.</p></div>
+        
+        <div class="figure-stack">
+        <figure class="chart chart-static">
+          <img src="../analysis/figures/m01_category_volume_2022.png" alt="Top 20 categories by app count, 2022 catalogue (all publishers)." loading="lazy">
+          <figcaption>Top 20 categories by app count, 2022 catalogue (all publishers).</figcaption>
+        </figure>
+        <figure class="chart chart-static">
+          <img src="../analysis/figures/m01_bigtech_share.png" alt="Categories where big tech / pre-installed publishers already hold most of the installs — the reason the toggle below matters." loading="lazy">
+          <figcaption>Categories where big tech / pre-installed publishers already hold most of the installs — the reason the toggle below matters.</figcaption>
+        </figure>
+        <figure class="chart chart-interactive">
+          <iframe src="../analysis/interactive/m01_opportunity_matrix.html" loading="lazy"></iframe>
+          <figcaption>Defaults to all publishers. Click the legend to switch to indie-only, or to compare both at once. <span class="interactive-tag">interactive — hover &amp; zoom</span></figcaption>
+        </figure></div>
+      </div>
+    </section>
+    <section class="story-section" id="category-shift">
+      <div class="section-index">02</div>
+      <div class="section-body">
+        <p class="kicker">Part 1 · Market Landscape</p>
+        <h2>Four years on: Finance is eating share, Music & Audio is shrinking</h2>
+        <div class="narrative"><p>Comparing each category's share of indie listings in 2022 against its share of the fresh 2026 scrape isolates where independent publishing activity is actually moving, independent of the size difference between the two datasets. This one is indie-only by design rather than by default — a pre-installed giant relisting an app doesn't reflect 'momentum' in any meaningful sense, so including it would just be noise.</p><p><strong>Finance</strong> gained the most relative share among indie developers, while <strong>Music & Audio</strong> lost the most — a signal worth cross-checking against the monetization and freshness sections later in this report before drawing conclusions.</p></div>
+        
+        <div class="figure-stack">
+        <figure class="chart chart-static">
+          <img src="../analysis/figures/m01_category_shift.png" alt="Biggest gainers and losers in indie category share, 2022 → 2026." loading="lazy">
+          <figcaption>Biggest gainers and losers in indie category share, 2022 → 2026.</figcaption>
+        </figure></div>
+      </div>
+    </section>
+    <section class="story-section" id="evolution">
+      <div class="section-index">03</div>
+      <div class="section-body">
+        <p class="kicker">Part 2 · Four Years Later</p>
+        <h2>The store didn't just grow — the business model changed underneath it</h2>
+        <div class="narrative"><p>Average star rating has risen from <strong>0.52</strong> in the 2022 catalogue to <strong>3.80</strong> in the 2026 scrape. That's not necessarily a quality story on its own — a fresh scrape of currently-live, currently-ranking apps is biased toward survivors, while the 2022 archive still carries every app that was ever listed, including the abandoned and the mediocre. Read it as 'what's actually competitive on the store today' rather than 'apps got better.'</p><p>The monetization mix tells a cleaner story: advertising and in-app purchases are more prevalent in the current live catalogue than they were across the full 2022 archive, consistent with a broader industry shift away from pure paid-app models over the last several years.</p></div>
+        
+        <div class="figure-stack">
+        <figure class="chart chart-static">
+          <img src="../analysis/figures/m02_business_model_shift.png" alt="Share of apps that are free, ad-supported, or offer in-app purchases." loading="lazy">
+          <figcaption>Share of apps that are free, ad-supported, or offer in-app purchases.</figcaption>
+        </figure>
+        <figure class="chart chart-interactive">
+          <iframe src="../analysis/interactive/m02_rating_shift.html" loading="lazy"></iframe>
+          <figcaption>Normalized rating distributions — hover to compare bin heights directly. <span class="interactive-tag">interactive — hover &amp; zoom</span></figcaption>
+        </figure></div>
+      </div>
+    </section>
+    <section class="story-section" id="app-explorer">
+      <div class="section-index">04</div>
+      <div class="section-body">
+        <p class="kicker">Part 3 · Meet the Market</p>
+        <h2>11,176 real apps, not a category average</h2>
+        <div class="narrative"><p>Every chart so far in this report aggregates up to the category level. This one doesn't — it's every single app in the live 2026 scrape, one dot each, positioned by how many people installed it and how it's currently rated. Nothing is text-labeled on the chart itself; hover any dot to see the real app name, its developer, and its category. That trade — no static labels — is what makes it possible to look at all 11,176 apps at once instead of a top-20 list.</p><p>The amber diamonds are big tech and pre-installed publishers — Google, Meta, Samsung, Microsoft, and similar — flagged separately because they aren't real competition for a new developer; they ship on the phone before day one, or ride a billion-user platform most indie developers will never have access to. They're only <strong>2.0%</strong> of the apps in this catalogue but <strong>64%</strong> of all installs — which is exactly why they're excluded from every competition and opportunity metric elsewhere in this report (market landscape, developer concentration, and the closing opportunity table). Follow the green dots; that's the market an indie developer is actually competing in.</p></div>
+        
+        <div class="figure-stack">
+        <figure class="chart chart-interactive">
+          <iframe src="../analysis/interactive/m03_app_explorer.html" loading="lazy"></iframe>
+          <figcaption>Green = independent developers. Amber diamonds = big tech / pre-installed. Hover any point for the app name. <span class="interactive-tag">interactive — hover &amp; zoom</span></figcaption>
+        </figure></div>
+      </div>
+    </section>
+    <section class="story-section" id="ratings-quality">
+      <div class="section-index">05</div>
+      <div class="section-body">
+        <p class="kicker">Part 4 · Ratings & Quality</p>
+        <h2>Reach and quality are two different games</h2>
+        <div class="narrative"><p>Plotting every app's rating count against its star score shows almost no correlation — apps with a handful of reviews are just as likely to sit at 4.5 stars as apps with millions of them. Star rating is not a proxy for scale; it's closer to a proxy for how well an app satisfies the narrow audience that bothered to review it.</p><p>At the category level the spread is real: <strong>Word</strong> averages 4.49★ across 73 apps, while <strong>Beauty</strong> trails at 2.81★. Categories that skew utility-first and low-friction (reference tools, simple productivity) tend to out-rate categories where user expectations are harder to meet consistently (entertainment, social, anything ad-heavy).</p></div>
+        
+        <div class="figure-stack">
+        <figure class="chart chart-interactive">
+          <iframe src="../analysis/interactive/m03_ratings_vs_score.html" loading="lazy"></iframe>
+          <figcaption>Each dot is one app. No visible upward trend means high ratings volume does not predict a high score. <span class="interactive-tag">interactive — hover &amp; zoom</span></figcaption>
+        </figure>
+        <figure class="chart chart-static">
+          <img src="../analysis/figures/m03_content_rating.png" alt="Content rating distribution across the live catalogue." loading="lazy">
+          <figcaption>Content rating distribution across the live catalogue.</figcaption>
+        </figure>
+        <figure class="chart chart-static">
+          <img src="../analysis/figures/m03_best_worst_categories.png" alt="Categories with the strongest and weakest average ratings (minimum 15 apps)." loading="lazy">
+          <figcaption>Categories with the strongest and weakest average ratings (minimum 15 apps).</figcaption>
+        </figure></div>
+      </div>
+    </section>
+    <section class="story-section" id="monetization">
+      <div class="section-index">06</div>
+      <div class="section-body">
+        <p class="kicker">Part 5 · Monetization</p>
+        <h2>Paid apps are a rounding error; hybrid ads-plus-IAP is the default</h2>
+        <div class="narrative"><p>Only <strong>2.3%</strong> of apps in the 2026 catalogue charge an upfront price, down from 3.1% in 2022. The dominant model today is a hybrid of advertising and in-app purchases — <strong>29%</strong> of apps in the current scrape run both simultaneously, monetizing free users through ads while reserving IAP for the smaller cohort willing to pay for removal of friction or unlocks.</p><p>The mix isn't uniform across categories, though. Utility categories skew toward ad-only or IAP-only, while games and entertainment lean hard into the hybrid model — makes sense, since games have both the engagement to sustain ad breaks and content worth selling.</p><p>Of the shrinking pool of apps that still charge upfront, the median price has held roughly steady, suggesting the paid-app segment that remains is a stable, deliberate niche (professional tools, specialist utilities) rather than a dying model still finding its floor.</p></div>
+        
+        <div class="figure-stack">
+        <figure class="chart chart-static">
+          <img src="../analysis/figures/m04_monetization_mix.png" alt="Monetization model share within each of the 10 largest 2026 categories." loading="lazy">
+          <figcaption>Monetization model share within each of the 10 largest 2026 categories.</figcaption>
+        </figure>
+        <figure class="chart chart-static">
+          <img src="../analysis/figures/m04_price_distribution.png" alt="Distribution of paid-app prices, 2022 archive vs. 2026 live scrape." loading="lazy">
+          <figcaption>Distribution of paid-app prices, 2022 archive vs. 2026 live scrape.</figcaption>
+        </figure></div>
+      </div>
+    </section>
+    <section class="story-section" id="developers">
+      <div class="section-index">07</div>
+      <div class="section-body">
+        <p class="kicker">Part 6 · Developer Landscape</p>
+        <h2>Big tech holds 64% of 2026 installs — and even without them, it's still winner-take-most</h2>
+        <div class="narrative"><p>Big tech and pre-installed publishers hold <strong>64%</strong> of all 2026 installs (38% in the 2022 archive) despite being a sliver of the developer count. Both charts below default to the full, unfiltered picture — everyone included — with an indie-only view one click away, so you can see exactly how much of that inequality is 'Google exists' versus a genuine indie winner-take-most dynamic.</p><p>Strip big tech out and the inequality barely moves: a Gini coefficient of 0.99 in 2022 and 0.92 in 2026 among indie developers alone (versus 0.99 / 0.97 with everyone included; 1.0 would mean one developer owns every install). The top 1% of indie developers by portfolio account for roughly 87% of indie installs in the archive and 46% in the fresh scrape — this is a real indie phenomenon, not just a big-tech artifact.</p><p>Most developers aren't trying to be the top 1%, either way: 63% of indie developers in the 2022 archive (and 86% in 2026) have shipped exactly one app. The realistic comparison for a new developer isn't 'the market average' — it's the long tail of other single-app indie publishers, most of whom never break out of low install counts regardless of category.</p></div>
+        
+        <div class="figure-stack">
+        <figure class="chart chart-interactive">
+          <iframe src="../analysis/interactive/m05_lorenz.html" loading="lazy"></iframe>
+          <figcaption>Grey = every developer. Green = indie only (click the legend to toggle). The further the curve bows below the diagonal, the more installs are concentrated in fewer hands. <span class="interactive-tag">interactive — hover &amp; zoom</span></figcaption>
+        </figure>
+        <figure class="chart chart-interactive">
+          <iframe src="../analysis/interactive/m05_top_developers.html" loading="lazy"></iframe>
+          <figcaption>Buttons at top-right switch between the full publisher list and indie-only. <span class="interactive-tag">interactive — hover &amp; zoom</span></figcaption>
+        </figure></div>
+      </div>
+    </section>
+    <section class="story-section" id="freshness">
+      <div class="section-index">08</div>
+      <div class="section-body">
+        <p class="kicker">Part 7 · Freshness & Momentum</p>
+        <h2>Publishing peaked years ago — but the survivors are actively maintained</h2>
+        <div class="narrative"><p>App publishing volume in the archive peaked around <strong>2021</strong> before tapering off in the most recent cohorts — partly a real slowdown, partly an artifact of a dataset frozen at a point in time (very recent apps hadn't yet accumulated the ratings history that makes them show up cleanly in aggregate stats).</p><p>Among apps live on the store today, <strong>72%</strong> were updated within the last 90 days, while <strong>7%</strong> haven't been touched in over a year. Update recency is one of the more honest signals in this dataset: an app that's still shipping updates is, at minimum, still being actively operated by someone with a reason to keep it alive — a reasonable proxy for 'this niche still has commercial upside.'</p></div>
+        
+        <div class="figure-stack">
+        <figure class="chart chart-static">
+          <img src="../analysis/figures/m06_release_trend.png" alt="Release cohort size and average rating by year, 2010-2021." loading="lazy">
+          <figcaption>Release cohort size and average rating by year, 2010-2021.</figcaption>
+        </figure>
+        <figure class="chart chart-interactive">
+          <iframe src="../analysis/interactive/m06_update_recency.html" loading="lazy"></iframe>
+          <figcaption>Distribution of time since last update across the current live catalogue. <span class="interactive-tag">interactive — hover &amp; zoom</span></figcaption>
+        </figure></div>
+      </div>
+    </section>
+    <section class="story-section" id="geo-discovery">
+      <div class="section-index">09</div>
+      <div class="section-body">
+        <p class="kicker">Part 8 · Geography & Discoverability</p>
+        <h2>United States rates apps kindest, Japan rates them harshest — and the charts have favorites</h2>
+        <div class="narrative"><p>The 2026 scrape tracked the same set of apps across ten country storefronts, which makes it possible to isolate a pure localization effect: identical apps, identical functionality, different regional audiences. <strong>United States</strong> users rate apps most generously on average, while <strong>Japan</strong> users are the toughest graders — a gap worth remembering before treating any single-region rating as a universal quality signal.</p><p><strong>Travel And Local</strong> shows up most often across the curated top-grossing and top-selling charts we tracked, meaning it gets outsized editorial placement independent of the raw app count in the category — real estate that's worth more than category size alone suggests.</p><p>Keyword search results tell a discoverability story of their own: broad terms return hundreds of competing apps and bury any one result deep in the list, while narrow, intent-specific terms — things like llm inference, exam prep, health tips hindi — surface a much smaller, less contested set of results. That gap between broad and narrow keywords is exactly where an app store optimization strategy earns its keep.</p></div>
+        
+        <div class="figure-stack">
+        <figure class="chart chart-static">
+          <img src="../analysis/figures/m07_score_by_country.png" alt="Average rating for the identical app catalogue, split by localized storefront." loading="lazy">
+          <figcaption>Average rating for the identical app catalogue, split by localized storefront.</figcaption>
+        </figure>
+        <figure class="chart chart-static">
+          <img src="../analysis/figures/m07_chart_visibility.png" alt="Category frequency across every tracked top-grossing / top-selling chart position." loading="lazy">
+          <figcaption>Category frequency across every tracked top-grossing / top-selling chart position.</figcaption>
+        </figure>
+        <figure class="chart chart-interactive">
+          <iframe src="../analysis/interactive/m07_keyword_competition.html" loading="lazy"></iframe>
+          <figcaption>Bubble size = number of distinct apps competing for that keyword; lower on the y-axis = buried deeper in results. Labels hide on hover-capable devices — use the tooltip instead. <span class="interactive-tag">interactive — hover &amp; zoom</span></figcaption>
+        </figure></div>
+      </div>
+    </section>
+    <section class="story-section" id="opportunity">
+      <div class="section-index">10</div>
+      <div class="section-body">
+        <p class="kicker">Part 9 · Opportunity Synthesis</p>
+        <h2>Where the numbers point, if you were shipping a new app this quarter</h2>
+        <div class="narrative"><p>Pulling every signal from this report into one score — competition density, demand per app, how monopolized the category is by its top 3 players, and how high the quality bar sits — surfaces a shortlist rather than a single answer. No category is a guaranteed win; this ranks where the <em>structural</em> conditions (crowding, concentration, demand) are most favorable, independent of whether you personally have the right idea or team for it. Big tech is excluded here for the same reason argued earlier in this report — checked against the full, unfiltered catalogue, the top of this ranking barely moves either way, which is itself a useful sanity check: these categories are genuinely indie-friendly, not just 'friendly because Google isn't in it.'</p><p><strong>Racing</strong> and <strong>Dating</strong> top the list: enough proven demand to know people download in this space, without the extreme crowding or top-3 monopoly that defines categories like Games or Communication. That's a starting point for due diligence, not a substitute for it — go read the actual top apps in these categories before committing.</p></div>
+        
+        <div class="table-wrap">
+        <table class="opp-table">
+          <thead><tr>
+            <th>Category</th><th>Apps</th><th>Median installs</th><th>Avg rating</th>
+            <th>Top-3 share</th><th>Opportunity score</th>
+          </tr></thead>
+          <tbody>
+        <tr>
+          <td class="cat-name">Racing</td>
+          <td>49</td>
+          <td>50,000,000</td>
+          <td>4.25</td>
+          <td>40%</td>
+          <td><span class="score-pill">74</span></td>
+        </tr>
+
+        <tr>
+          <td class="cat-name">Dating</td>
+          <td>55</td>
+          <td>5,000,000</td>
+          <td>3.44</td>
+          <td>53%</td>
+          <td><span class="score-pill">69</span></td>
+        </tr>
+
+        <tr>
+          <td class="cat-name">Arcade</td>
+          <td>75</td>
+          <td>10,000,000</td>
+          <td>4.18</td>
+          <td>25%</td>
+          <td><span class="score-pill">69</span></td>
+        </tr>
+
+        <tr>
+          <td class="cat-name">Word</td>
+          <td>72</td>
+          <td>10,000,000</td>
+          <td>4.50</td>
+          <td>28%</td>
+          <td><span class="score-pill">66</span></td>
+        </tr>
+
+        <tr>
+          <td class="cat-name">Communication</td>
+          <td>114</td>
+          <td>5,000,000</td>
+          <td>3.82</td>
+          <td>27%</td>
+          <td><span class="score-pill">66</span></td>
+        </tr>
+
+        <tr>
+          <td class="cat-name">Maps & Navigation</td>
+          <td>145</td>
+          <td>5,000,000</td>
+          <td>3.67</td>
+          <td>28%</td>
+          <td><span class="score-pill">65</span></td>
+        </tr>
+
+        <tr>
+          <td class="cat-name">Card</td>
+          <td>104</td>
+          <td>5,000,000</td>
+          <td>4.27</td>
+          <td>25%</td>
+          <td><span class="score-pill">63</span></td>
+        </tr>
+
+        <tr>
+          <td class="cat-name">Simulation</td>
+          <td>171</td>
+          <td>5,000,000</td>
+          <td>4.18</td>
+          <td>10%</td>
+          <td><span class="score-pill">63</span></td>
+        </tr>
+
+        <tr>
+          <td class="cat-name">Action</td>
+          <td>153</td>
+          <td>10,000,000</td>
+          <td>4.27</td>
+          <td>26%</td>
+          <td><span class="score-pill">62</span></td>
+        </tr>
+
+        <tr>
+          <td class="cat-name">Travel & Local</td>
+          <td>246</td>
+          <td>5,000,000</td>
+          <td>3.78</td>
+          <td>22%</td>
+          <td><span class="score-pill">60</span></td>
+        </tr></tbody>
+        </table>
+        </div>
+        
+        <div class="figure-stack"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Built from the 2022 tapivedotcom Play Store archive and a 2026 first-party scrape across ten
+    country storefronts · Generated August 2026
+  </footer>
+
+</body>
+</html>
