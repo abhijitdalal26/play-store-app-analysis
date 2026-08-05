@@ -2,6 +2,8 @@
 
 ![Google Play Store analysis banner](images/logo.png)
 
+Project write-up: [abhijitdalal.vercel.app/projects/play-store-app-analysis](https://abhijitdalal.vercel.app/projects/play-store-app-analysis)
+
 A streamlined, direct-connection data extraction pipeline for discovering and analyzing Google Play Store apps across 10 priority markets.
 
 ## Project Goal
